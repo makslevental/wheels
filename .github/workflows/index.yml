@@ -1,0 +1,33 @@
+name: Index
+
+on:
+  workflow_dispatch:
+  release:
+    types: [published, edited]
+
+  schedule:
+    - cron: '0 * * * *'
+
+jobs:
+  update_index_html:
+    permissions:
+      contents: write
+
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: download
+        shell: bash
+        run: |
+          curl 'https://github.com/makslevental/wheels/releases/expanded_assets/i' \
+           -H 'accept: text/html, application/xhtml+xml' \
+           -H 'referer: https://github.com/makslevental/wheels/releases' \
+           -H 'user-agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36' \
+           --compressed -o index.html
+          sed -i.bak 's/\/makslevental/https:\/\/github.com\/makslevental/g' index.html
+
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_author: Auto-commit <actions@github.com>
