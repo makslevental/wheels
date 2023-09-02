@@ -3,8 +3,7 @@ name: Index
 on:
   workflow_dispatch:
   release:
-    types:
-      - edited
+    types: [published, edited]
 
   schedule:
     - cron: '0 * * * *'
